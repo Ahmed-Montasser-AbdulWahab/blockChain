@@ -95,7 +95,6 @@ class True_User:
 class Attacker:
     def attack_BlockChain(self, blockchain):
         blockchain.add_new_transaction(random_transactions())
-        print(len(blockchain.unconfirmed_transactions))
         if not blockchain.unconfirmed_transactions:
                 return False
         new_block = Block(index=blockchain.chain[-2].index+1,
@@ -103,7 +102,6 @@ class Attacker:
                             timestamp=time.time(),
                             previous_hash=blockchain.chain[-2].hash)
         proof = blockchain.proof_of_work(new_block)
-        print(proof)
         blockchain.add_block(new_block, proof)
         blockchain.unconfirmed_transactions = []
         return new_block.index
@@ -118,8 +116,40 @@ def random_transactions():
         total_ran.append(ran)
     return total_ran
 
+def simulate_attack(attack_speed, at_blockchain, tu_blockchain):
+    for t in range(100):
+        if (random.randint(0,100) % 100 < attack_speed):
+            at_blockchain.add_new_transaction(random_transactions())
+            at_blockchain.mine()
+        else:
+            tu_blockchain.add_new_transaction(random_transactions())
+            tu_blockchain.mine()
+
+def check_winner(at_blockchain, tu_blockchain):
+    if len(at_blockchain.chain)>len(tu_blockchain.chain):
+        return 0
+    elif len(at_blockchain.chain)<len(tu_blockchain.chain):
+        return 1
+    else:
+        return -1
+
+
+def print_chains(blockchain1,t):
+    print(t)
+    print('Length of Block : ', len(blockchain1.chain))
+    # for i in blockchain1.chain:
+    #     print('Index : ', i.index)
+    #     print('Transactions : ', i.transactions)
+    #     print('Now Hash : ', i.hash )
+    #     print('Previous Hash : ', i.previous_hash)
+    print('*'*9)
+
 
 if __name__ == '__main__':
+
+    a_s = 50 #Attack Speed
+
+
     """Experimenting Difficulty to produce 1 block/sec"""
     blockchain = Blockchain()
 
@@ -127,26 +157,26 @@ if __name__ == '__main__':
 
 
 
-    # while(True):
-    #     blockchain.add_new_transaction(random_transactions())
-    #     n1 = time.time()
-    #     index = blockchain.mine()
-    #     n2 = time.time() - n1
-    #     if 1.5 > n2 > 0.5:
-    #         print('Difficulty : ' , blockchain.difficulty)
-    #         print('Time :', n2)
-    #         print('Index :' , index)
-    #         break
-    #     elif n2 >= 1.5 :
-    #         Blockchain.difficulty-=1
-    #     elif n2 <= 0.5:
-    #         Blockchain.difficulty+=1
+    while(True):
+        blockchain.add_new_transaction(random_transactions())
+        n1 = time.time()
+        index = blockchain.mine()
+        n2 = time.time() - n1
+        if 1.5 > n2 > 0.5:
+            print('Difficulty : ' , blockchain.difficulty)
+            print('Time :', n2)
+            print('Index :' , index)
+            break
+        elif n2 >= 1.5 :
+            Blockchain.difficulty-=1
+        elif n2 <= 0.5:
+            Blockchain.difficulty+=1
 
-    #     print('************************************')
-    #     print('Index :' , index)
-    #     print('Time :', n2)
-    #     print('Difficulty : ' , blockchain.difficulty)
-    #     print('************************************')
+        print('************************************')
+        print('Index :' , index)
+        print('Time :', n2)
+        print('Difficulty : ' , blockchain.difficulty)
+        print('************************************')
     """END OF First Requirement"""
 
     """Second Requirement"""
@@ -154,19 +184,51 @@ if __name__ == '__main__':
     tu1 = True_User()
     for i in range(0,3):
         tu1.mine_addBlock(blockchain=blockchain)
-    
-    # for i in blockchain.chain:
-    #     print('Index : ', i.index)
-    #     print('Transactions : ', i.transactions)
-    #     print('Now Hash : ', i.hash )
-    #     print('Previous Hash : ', i.previous_hash)
+
     
     atck = Attacker()
     atck.attack_BlockChain(blockchain=blockchain)
-    for i in blockchain.chain:
-        print('Index : ', i.index)
-        print('Transactions : ', i.transactions)
-        print('Now Hash : ', i.hash )
-        print('Previous Hash : ', i.previous_hash)
+
+
+    true_user_blockchain = Blockchain()
+    attacker_blockchain = Blockchain()
+
+    true_user_blockchain.chain.append(blockchain.chain[-2])
+    attacker_blockchain.chain.append(blockchain.chain[-1])
+
+    simulate_attack(a_s, attacker_blockchain, true_user_blockchain)
+    print_chains(true_user_blockchain,'True User')
+    print_chains(attacker_blockchain, 'Attacker')
+
+    while True:
+        winner_state = check_winner(attacker_blockchain, true_user_blockchain)
+
+        if winner_state == 0:
+            print('Attacker wins')
+            del blockchain.chain[-2]
+            del blockchain.chain[-1]
+            blockchain.chain = blockchain.chain + attacker_blockchain.chain
+            del true_user_blockchain
+            del attacker_blockchain
+            break
+        elif winner_state == 1:
+            print('True User wins')
+            del blockchain.chain[-2]
+            del blockchain.chain[-1]
+            blockchain.chain = blockchain.chain + true_user_blockchain.chain
+            del attacker_blockchain
+            del true_user_blockchain
+            break
+        else :
+            print('Tie')
+            simulate_attack(a_s, attacker_blockchain, true_user_blockchain)
+
+
+
+
+
+
+
+
 
 
