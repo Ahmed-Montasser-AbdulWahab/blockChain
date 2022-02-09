@@ -83,14 +83,6 @@ class Blockchain:
             return new_block.index
 
 
-def random_transactions():
-    total_ran = []
-    for _ in range(random.randint(3, 5)):
-        s = 16
-        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = s))
-        total_ran.append(ran)
-    return total_ran
-
 class True_User:
     def mine_addBlock(self, blockchain):
         # block_miner = Block(index=blockchain.chain[-1].index + 1, transactions=blockchain.unconfirmed_transactions, timestamp=time.time(),
@@ -117,13 +109,6 @@ class Attacker:
         return new_block.index
 
 
-class Miner:
-    def mine_addBlock(self, blockchain):
-        block_miner = Block(index=blockchain.chain[-1].index + 1, transactions=blockchain.unconfirmed_transactions, timestamp=time.time(),
-         previous_hash=blockchain.last_block.hash)
-        proof_of_WORK = blockchain.proof_of_work(block_miner)
-        blockchain.add_block(block_miner, proof_of_WORK)
-
 
 def random_transactions():
     total_ran = []
@@ -139,40 +124,6 @@ if __name__ == '__main__':
     blockchain = Blockchain()
 
     blockchain.create_genesis_block()
-
-    while(True):
-        blockchain.add_new_transaction('Bob pays Lisa 5$')
-        blockchain.add_new_transaction('Alice pays Bob 6$')
-        n1 = time.time()
-        index = blockchain.mine()
-        n2 = time.time() - n1
-        if 1.5 > n2 > 0.5:
-            print('Difficulty : ' , blockchain.difficulty)
-            print('Time :', n2)
-            print('Index :' , index)
-            break
-        elif n2 >= 1.5 :
-            Blockchain.difficulty-=1
-        elif n2 <= 0.5:
-            Blockchain.difficulty+=1
-
-
-
-    print(blockchain.last_block.transactions)
-    while(True):
-        blockchain.add_new_transaction(random_transactions())
-        n1 = time.time()
-        index = blockchain.mine()
-        n2 = time.time() - n1
-        if 1.5 > n2 > 0.5:
-            print('Difficulty : ' , blockchain.difficulty)
-            print('Time :', n2)
-            print('Index :' , index)
-            break
-        elif n2 >= 1.5 :
-            Blockchain.difficulty-=1
-        elif n2 <= 0.5:
-            Blockchain.difficulty+=1
 
 
 
@@ -218,18 +169,4 @@ if __name__ == '__main__':
         print('Now Hash : ', i.hash )
         print('Previous Hash : ', i.previous_hash)
 
-        print('************************************')
-        print('Index :' , index)
-        print('Time :', n2)
-        print('Difficulty : ' , blockchain.difficulty)
-        print('************************************')
-
-        print('************************************')
-        print('Index :' , index)
-        print('Time :', n2)
-        print('Difficulty : ' , blockchain.difficulty)
-        print('************************************')
-    """END OF First Requirement"""
-
-    """Second Requirement"""
 
