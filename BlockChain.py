@@ -147,7 +147,7 @@ def print_chains(blockchain1,t):
 
 if __name__ == '__main__':
 
-    a_s = 51 #Attack Speed
+    a_s = 25 #Attack Speed
 
 
     """Experimenting Difficulty to produce 1 block/sec"""
@@ -162,13 +162,13 @@ if __name__ == '__main__':
         n1 = time.time()
         blockchain.mine()
         n2 = time.time() - n1
-        if 1.3 > n2 > 0.75:
+        if 1.3 > n2 > 0.8:
             print('Chosen Difficulty : ' , blockchain.difficulty)
             print('Time :', n2)
             break
-        elif n2 >= 1.5 :
+        elif n2 >= 1.3 :
             Blockchain.difficulty-=1
-        elif n2 <= 0.5:
+        elif n2 <= 0.8:
             Blockchain.difficulty+=1
 
         print('************************************')
