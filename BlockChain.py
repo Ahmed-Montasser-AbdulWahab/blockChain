@@ -1,10 +1,12 @@
 from hashlib import sha256
 import json
+import string
 import time
+import random
 
-# class Miner:
-#     def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
-#         self.index = index
+
+
+
 
 class Block:
     def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
@@ -63,7 +65,7 @@ class Blockchain:
                     block_hash == block.compute_hash())
 
     def add_new_transaction(self, transaction):
-                self.unconfirmed_transactions.append(transaction)
+                self.unconfirmed_transactions = self.unconfirmed_transactions + transaction
     
     def mine(self):
             if not self.unconfirmed_transactions:
@@ -81,13 +83,30 @@ class Blockchain:
             self.unconfirmed_transactions = []
             return new_block.index
 
+class Miner:
+    def mine_addBlock(self, blockchain):
+        block_miner = Block(index=blockchain.chain[-1].index + 1, transactions=blockchain.unconfirmed_transactions, timestamp=time.time(),
+         previous_hash=blockchain.last_block.hash)
+        proof_of_WORK = blockchain.proof_of_work(block_miner)
+        blockchain.add_block(block_miner, proof_of_WORK)
+
+
+def random_transactions():
+    total_ran = []
+    for _ in range(random.randint(3, 5)):
+        s = 16
+        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = s))
+        total_ran.append(ran)
+    return total_ran
 
 if __name__ == '__main__':
     """Experimenting Difficulty to produce 1 block/sec"""
     blockchain = Blockchain()
+
+
+    print(blockchain.last_block.transactions)
     while(True):
-        blockchain.add_new_transaction('Bob pays Lisa 5$')
-        blockchain.add_new_transaction('Alice pays Bob 6$')
+        blockchain.add_new_transaction(random_transactions())
         n1 = time.time()
         index = blockchain.mine()
         n2 = time.time() - n1
@@ -106,3 +125,6 @@ if __name__ == '__main__':
         print('Time :', n2)
         print('Difficulty : ' , blockchain.difficulty)
         print('************************************')
+    """END OF First Requirement"""
+
+    """Second Requirement"""
