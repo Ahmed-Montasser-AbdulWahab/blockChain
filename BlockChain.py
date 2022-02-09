@@ -222,6 +222,7 @@ if __name__ == '__main__':
         else :
             print('Tie')
             simulate_attack(a_s, attacker_blockchain, true_user_blockchain)
+    #print_chains(blockchain,'Final BlockChain')
 
 
 
