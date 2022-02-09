@@ -37,7 +37,7 @@ class Blockchain:
         return self.chain[-1]
 
     
-    difficulty = 4
+    difficulty = 1
     def proof_of_work(self, block):
             block.nonce = 0
             computed_hash = block.compute_hash()
@@ -147,7 +147,7 @@ def print_chains(blockchain1,t):
 
 if __name__ == '__main__':
 
-    a_s = 50 #Attack Speed
+    a_s = 51 #Attack Speed
 
 
     """Experimenting Difficulty to produce 1 block/sec"""
@@ -160,12 +160,11 @@ if __name__ == '__main__':
     while(True):
         blockchain.add_new_transaction(random_transactions())
         n1 = time.time()
-        index = blockchain.mine()
+        blockchain.mine()
         n2 = time.time() - n1
-        if 1.5 > n2 > 0.5:
-            print('Difficulty : ' , blockchain.difficulty)
+        if 1.3 > n2 > 0.75:
+            print('Chosen Difficulty : ' , blockchain.difficulty)
             print('Time :', n2)
-            print('Index :' , index)
             break
         elif n2 >= 1.5 :
             Blockchain.difficulty-=1
@@ -173,9 +172,8 @@ if __name__ == '__main__':
             Blockchain.difficulty+=1
 
         print('************************************')
-        print('Index :' , index)
-        print('Time :', n2)
         print('Difficulty : ' , blockchain.difficulty)
+        print('Time :', n2)
         print('************************************')
     """END OF First Requirement"""
 
@@ -197,8 +195,8 @@ if __name__ == '__main__':
     attacker_blockchain.chain.append(blockchain.chain[-1])
 
     simulate_attack(a_s, attacker_blockchain, true_user_blockchain)
-    print_chains(true_user_blockchain,'True User')
-    print_chains(attacker_blockchain, 'Attacker')
+    print_chains(true_user_blockchain,'True User Blockchain')
+    print_chains(attacker_blockchain, 'Attacker Blockchain')
 
     while True:
         winner_state = check_winner(attacker_blockchain, true_user_blockchain)
