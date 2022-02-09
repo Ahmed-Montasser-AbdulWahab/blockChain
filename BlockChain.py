@@ -203,6 +203,7 @@ if __name__ == '__main__':
 
         if winner_state == 0:
             print('Attacker wins')
+            print('Attack Speed ', a_s)
             del blockchain.chain[-2]
             del blockchain.chain[-1]
             blockchain.chain = blockchain.chain + attacker_blockchain.chain
@@ -211,6 +212,7 @@ if __name__ == '__main__':
             break
         elif winner_state == 1:
             print('True User wins')
+            print('Attack Speed ', a_s)
             del blockchain.chain[-2]
             del blockchain.chain[-1]
             blockchain.chain = blockchain.chain + true_user_blockchain.chain
@@ -219,6 +221,7 @@ if __name__ == '__main__':
             break
         else :
             print('Tie')
+            print('Attack Speed in Tie : ', a_s)
             simulate_attack(a_s, attacker_blockchain, true_user_blockchain)
     #print_chains(blockchain,'Final BlockChain')
 
